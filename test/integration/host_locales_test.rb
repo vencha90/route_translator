@@ -67,4 +67,11 @@ class HostLocalesTest < integration_test_suite_parent_class
     assert_equal URI.escape('/показывать'), @response.body
     assert_response :success
   end
+
+  def test_non_native_path
+    ## es route on ru com
+    host! 'ru.testapp.com'
+    get URI.escape('/dummy')
+    assert_response :not_found
+  end
 end
