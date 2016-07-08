@@ -35,12 +35,13 @@ module RouteTranslator
 
     module_function
 
-    def translations_for(route_set, path, name, options_constraints, options)
+    def translations_for(route_set, path, name, options_constraints, options, mapping)
       RouteTranslator::Translator::RouteHelpers.add name, route_set.named_routes
 
+      scope = [:routes, :controllers].concat mapping.defaults[:controller].split('/').map(&:to_sym)
       available_locales.each do |locale|
         begin
-          translated_path = RouteTranslator::Translator::Path.translate(path, locale)
+          translated_path = RouteTranslator::Translator::Path.translate(path, locale, scope)
         rescue I18n::MissingTranslationData => e
           raise e unless RouteTranslator.config.disable_fallback
           next
